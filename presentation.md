@@ -3,6 +3,7 @@ marp: true
 theme: default
 paginate: true
 math: katex
+header: ![width:200px](assets/isc.png)
 ---
 
 <style>
@@ -17,7 +18,7 @@ img[alt~="center"] {
 An introduction to Kafka's core concepts, with a live demo.
 
 *Presented by Nathan Antonietti*
-*Date: 25.09.25*
+*Date: 02.10.25*
 
 ---
 
@@ -37,17 +38,21 @@ An introduction to Kafka's core concepts, with a live demo.
 ## Kafka's High-Level Architecture
 
 Kafka is a distributed system with:
-- **Producers**: Send data to topics.
-- **Consumers**: Read data from topics.
 - **Brokers**: Servers that store and manage data.
 - **Topics**: Logical channels for data streams.
+- **Producers**: Send data to topics.
+- **Consumers**: Read data from topics.
 
 ---
 
 ## Kafka's High-Level Architecture
 
+![width:750px center](assets/cluster-architecture.png) <!-- Kafka docs diagram of brokers -->
+[Reference: ProjectPro — Kafka architecture](https://www.projectpro.io/article/apache-kafka-architecture-/442)
+
+<!-- 
 ![width:400px center](assets/kafka-architecture-diagram.png) <!-- Kafka Architecture Diagram -->
-[Reference: Novell Zenworks — Kafka documentation](https://www.novell.com/documentation/zenworks-24.4/zen_kafka/data/zen_kafka.html)
+<!-- [Reference: Novell Zenworks — Kafka documentation](https://www.novell.com/documentation/zenworks-24.4/zen_kafka/data/zen_kafka.html) -->
 
 ---
 
@@ -56,7 +61,7 @@ Kafka is a distributed system with:
 - **Brokers** are the Kafka server processes that form the cluster.
 - Each broker is a node (machine/container) running the Kafka software.
 - They store data, handle requests, and replicate for fault tolerance.
-- A cluster typically has 3+ brokers for production (odd number for quorum).
+- A cluster typically has 3+ brokers for production
 
 **Key Point:** Brokers don't know about individual producers/consumers; they manage storage and replication.
 
@@ -71,13 +76,6 @@ Kafka is a distributed system with:
 5. **Partition Management**: Assign and balance partitions across brokers.
 
 Brokers use KRaft (Kafka Raft) for metadata instead of ZooKeeper in newer versions.
-
----
-
-## Broker Responsibilities
-
-![width:900px center](assets/broker-workflow.png) <!-- Broker Workflow -->
-[Reference: Confluent - Kafka Brokers](https://developer.confluent.io/courses/architecture/broker/)
 
 ---
 
@@ -145,61 +143,12 @@ Config: `--replication-factor 2` means each partition on 2 brokers.
 
 ---
 
-## Live Demonstration Setup
+## Live Demonstration
 
-Using Docker Compose for a 2-broker Kafka cluster (KRaft mode).
+Using Docker Compose for a 2-broker Kafka cluster.
 
-**Project Files:**
-- `docker-compose.yaml`: Starts 2 brokers + Kafka UI (localhost:8080).
-- `producer.py`: Sends JSON messages to 'demo-topic'.
-- `consumer.py`: Reads from topic (now with `group_id` param).
-
-Run: `docker-compose up -d` to start brokers.
-
----
-
-## Demo: Creating the Topic
-
-1. Start brokers: `docker-compose up -d`.
-2. Create topic with 2 partitions, replication 2:
-
-docker exec kafka-deploy-kafka-1 kafka-topics.sh --create --topic demo-topic --bootstrap-server localhost:9092 --partitions 2 --replication-factor 2
-
-3. Verify: `kafka-topics.sh --describe --topic demo-topic`.
-
-**Output:** PartitionCount: 2, ReplicationFactor: 2.
-Leaders on different brokers!
-
-View in UI: http:localhost:8080.
-
----
-
-## Demo: Producer Sending Messages
-
-Run: `python producer.py`
-
-- Sends 5 messages to 'demo-topic' (round-robin to partitions).
-- Bootstrap servers: localhost:9092,9095 (our brokers).
-- Messages: `{'event_id': 1, 'message': 'This is event number 1'}` etc.
-
-**Behind the Scenes:** Producer connects to brokers, assigns to partitions, replicates.
-
----
-
-## Demo: Consumers Receiving Messages
-
-Run in two terminals (different groups for full broadcast):
-
-1. `python consumer.py group1`
-2. `python consumer.py group2`
-
-- Each consumer reads ALL messages (separate groups = independent offsets).
-- With same group: Load-balanced (one per partition).
-
-**Observation:** Both get all 5 messages. Restart to see rebalancing!
-
-If same group: Messages split (e.g., 3 to one, 2 to other).
-
+- Topic 1: 1 partiton and 1 replication
+- Topic 2: 2 partitons and 2 replications
 ---
 
 ## Use Cases for Kafka
@@ -222,23 +171,16 @@ Brokers ensure durability; Topics organize streams.
 
 ---
 
-## More Use Cases: Brokers and Topics
-
-![width:700px center](assets/use-cases.jpg) <!-- Use Cases Infographic -->
-[Reference: medium.com @sachin28 — Kafka Use Cases](https://medium.com/@_amanarora/replication-in-kafka-58b39e91b64e)
-
-
----
-
 ## Conclusion
 
 - Kafka: Powerful for event streaming.
 - Brokers: Manage storage, replication, and availability.
 - Topics: Organize data into scalable, partitioned logs.
-- Demo shows real-world basics—extend for production!
-
-Questions? Explore: kafka.apache.org
 
 Thank you!
 
 ---
+
+## Sources
+
+Gemini

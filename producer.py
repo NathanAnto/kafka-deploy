@@ -9,7 +9,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 topic = sys.argv[1]
 
-bootstrap_servers = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092,localhost:9095').split(',')
+bootstrap_servers = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9093,localhost:9096').split(',')
 
 # Create an instance of the Kafka producer
 producer = KafkaProducer(
@@ -18,7 +18,7 @@ producer = KafkaProducer(
 )
 
 print("Sending messages...")
-for i in range(1, 6):
+for i in range(1, 11):
     message = {'event_id': i, 'key': 'test', 'message': f'This is event number {i}'}
     
     # Send the message to the topic

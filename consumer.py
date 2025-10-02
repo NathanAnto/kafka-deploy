@@ -11,7 +11,7 @@ if len(sys.argv) != 3:
 topic = sys.argv[1]
 group_id = sys.argv[2]
 
-bootstrap_servers = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092,localhost:9095').split(',')
+bootstrap_servers = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9093,localhost:9096').split(',')
 
 consumer = KafkaConsumer(
     topic,
